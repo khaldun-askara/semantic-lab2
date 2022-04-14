@@ -3,8 +3,12 @@ import string
 
 from nltk.corpus import stopwords
 from nltk.tokenize import word_tokenize
+from nltk.stem.snowball import SnowballStemmer
 import pymorphy2
 morph = pymorphy2.MorphAnalyzer()
+stemmer = SnowballStemmer(language='russian')
+
+PROGRAM = 1
 
 input_filename = 'input1.txt'
 output_filename = 'output.txt'
@@ -18,8 +22,14 @@ word_tokens = word_tokenize(contents)
 
 # нормализация токенов
 normalized_contents = []
-for word in word_tokens:
-    normalized_contents.append(morph.parse(word)[0].normal_form)
+if (PROGRAM==1):
+    # нормализация pymorphy2
+    for word in word_tokens:
+        normalized_contents.append(morph.parse(word)[0].normal_form)
+else:
+    # нормализация nltk
+    for word in word_tokens:
+        normalized_contents.append(stemmer.stem(word.lower()))
 
 # удаление стоп-слов
 stop_words = set(stopwords.words('russian'))
